@@ -1,5 +1,7 @@
+import './globals.css';
+
 export const metadata = {
-	title: 'My App',
+	title: 'Add Expense',
 	description: 'A Next.js App',
 };
 
