@@ -1,9 +1,6 @@
 import Link from 'next/link';
 
 export default function Expenses() {
-	const d = new Date();
-	console.log(d.toLocaleString());
-
 	return (
 		<div>
 			<header>

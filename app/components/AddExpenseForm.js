@@ -1,13 +1,34 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function AddExpenseForm() {
-	// Creates state to assign to each input value
 	const [expenseData, setExpenseData] = useState({
+		// State for the input values of expenses
 		title: '',
 		amount: '',
-		category: '',
+		category: {},
+	});
+	const [category, setCategory] = useState('');
+	const [categories, setCategories] = useState([]); // default state is [] for map function
+
+	// On intial render fetches categories from database
+	useEffect(() => {
+		async function getCategories() {
+			const response = await fetch('/api/categories');
+			const data = await response.json(); // must parse response from JSON to javascipt object to be usuable
+			setCategories(data);
+		}
+		getCategories();
+	}, []);
+
+	// Maps the categories on drop down options for selection assigning the value to the category id
+	const categoryElements = categories.map((category) => {
+		return (
+			<option key={category._id} value={category._id}>
+				{category.name}
+			</option>
+		);
 	});
 
 	// Whenver an input value is changes it adjusts it corresponding field in expenseData state
@@ -17,9 +38,22 @@ export default function AddExpenseForm() {
 		setExpenseData({ ...expenseData, [name]: value });
 	}
 
+	function handleCategoryChange(e) {
+		const { value } = e.target;
+		setCategory(value);
+
+		const categoryObject = categories.find((object) => object._id === value);
+		setExpenseData({
+			...expenseData,
+			category: { name: categoryObject.name, colour: categoryObject.colour },
+		});
+	}
+
 	// Submits expenseData once the form is submitted
 	async function handleSubmit(e) {
 		e.preventDefault();
+
+		console.log(expenseData);
 
 		try {
 			// Attempts to make POST request to api/expenses
@@ -29,16 +63,15 @@ export default function AddExpenseForm() {
 				body: JSON.stringify(expenseData), // must parse expenseData from javascript object to JSON
 			});
 
-			// Checks if the response return status between 200-299
-			if (response.ok) {
-				const data = await response.json();
-			} else {
+			// Logs error if the response did not return status between 200-299
+			if (!response.ok) {
 				console.error('Failed to add expense');
 			}
 		} catch (e) {
 			console.error('Error: ', e);
 		}
 		setExpenseData({ title: '', amount: '', category: '' });
+		setCategory('');
 	}
 
 	return (
@@ -65,12 +98,11 @@ export default function AddExpenseForm() {
 				Category:
 				<select
 					name='category'
-					value={expenseData.category}
-					onChange={handleChange}
+					value={category}
+					onChange={handleCategoryChange}
 				>
 					<option>Select a Category</option>
-					<option value='fun'>Fun</option>
-					<option value='not-fun'>Not Fun</option>
+					{categoryElements}
 				</select>
 			</label>
 			<button type='submit'>Add +</button>

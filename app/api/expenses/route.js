@@ -1,5 +1,5 @@
 import connectDB from '@/lib/mongodb.js';
-import Expense from '@/lib/models/Expense';
+import Expense from '@/lib/models/Expense'; // imports Expense model
 
 // Creates route to handle GET request from /expenses/
 export async function GET() {
