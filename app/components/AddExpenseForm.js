@@ -9,7 +9,7 @@ export default function AddExpenseForm() {
 		amount: '',
 		category: {},
 	});
-	const [category, setCategory] = useState('');
+	const [category, setCategory] = useState(''); // state for displaying categories in select since category is an object in expenseData
 	const [categories, setCategories] = useState([]); // default state is [] for map function
 
 	// On intial render fetches categories from database
@@ -38,10 +38,12 @@ export default function AddExpenseForm() {
 		setExpenseData({ ...expenseData, [name]: value });
 	}
 
+	// Handles whenever category changes and updates category and expenseData state
 	function handleCategoryChange(e) {
 		const { value } = e.target;
 		setCategory(value);
 
+		// Converts the objectID to the actual category object and updates expenseData with correct object
 		const categoryObject = categories.find((object) => object._id === value);
 		setExpenseData({
 			...expenseData,
@@ -52,8 +54,6 @@ export default function AddExpenseForm() {
 	// Submits expenseData once the form is submitted
 	async function handleSubmit(e) {
 		e.preventDefault();
-
-		console.log(expenseData);
 
 		try {
 			// Attempts to make POST request to api/expenses
@@ -70,6 +70,8 @@ export default function AddExpenseForm() {
 		} catch (e) {
 			console.error('Error: ', e);
 		}
+
+		// Resets all states on success
 		setExpenseData({ title: '', amount: '', category: '' });
 		setCategory('');
 	}
