@@ -55,6 +55,8 @@ export default function AddExpenseForm() {
 	async function handleSubmit(e) {
 		e.preventDefault();
 
+		console.log(typeof expenseData.amount);
+
 		try {
 			// Attempts to make POST request to api/expenses
 			const response = await fetch('/api/expenses', {
