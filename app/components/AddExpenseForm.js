@@ -55,8 +55,6 @@ export default function AddExpenseForm() {
 	async function handleSubmit(e) {
 		e.preventDefault();
 
-		console.log(typeof expenseData.amount);
-
 		try {
 			// Attempts to make POST request to api/expenses
 			const response = await fetch('/api/expenses', {
@@ -65,17 +63,14 @@ export default function AddExpenseForm() {
 				body: JSON.stringify(expenseData), // must parse expenseData from javascript object to JSON
 			});
 
-			// Logs error if the response did not return status between 200-299
-			if (!response.ok) {
-				console.error('Failed to add expense');
+			// Resets input fields only if response is ok
+			if (response.ok) {
+				setExpenseData({ title: '', amount: '', category: '' });
+				setCategory('');
 			}
 		} catch (e) {
 			console.error('Error: ', e);
 		}
-
-		// Resets all states on success
-		setExpenseData({ title: '', amount: '', category: '' });
-		setCategory('');
 	}
 
 	return (
@@ -85,6 +80,7 @@ export default function AddExpenseForm() {
 				<input
 					type='text'
 					name='title'
+					id='title'
 					value={expenseData.title}
 					onChange={handleChange}
 				/>
@@ -94,6 +90,7 @@ export default function AddExpenseForm() {
 				<input
 					type='number'
 					name='amount'
+					id='amount'
 					value={expenseData.amount}
 					onChange={handleChange}
 				/>
@@ -102,6 +99,7 @@ export default function AddExpenseForm() {
 				Category:
 				<select
 					name='category'
+					id='category'
 					value={category}
 					onChange={handleCategoryChange}
 				>
