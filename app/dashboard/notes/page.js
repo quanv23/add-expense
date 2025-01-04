@@ -25,7 +25,14 @@ export default function Notes() {
 
 	// Maps notes on NoteDisplay component for jsx
 	const noteElements = notes.map((note) => {
-		return <NoteDisplay key={note._id} title={note.title} body={note.body} />;
+		return (
+			<NoteDisplay
+				key={note._id}
+				id={note._id}
+				title={note.title}
+				body={note.body}
+			/>
+		);
 	});
 
 	// Function to pass to addNoteForm to update notes state when a new note is created
