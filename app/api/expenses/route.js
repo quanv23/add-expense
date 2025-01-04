@@ -1,8 +1,11 @@
 import connectDB from '@/lib/mongodb.js';
 import Expense from '@/lib/models/Expense'; // imports Expense model
+import moment from 'moment-timezone'; // import moment to dynamically determine timezone
 
 // Creates route to handle GET request from /expenses/
 export async function GET() {
+	const localTimeZone = moment.tz.guess(); // dynamically gets timezone
+
 	try {
 		// Connects to db and gets all expenses grouped by month using aggregate pipeline
 		await connectDB();
@@ -10,7 +13,13 @@ export async function GET() {
 			{
 				$addFields: {
 					// adds new field in 2024-01 format to all expenses to act as unique key to group expenses
-					yearMonth: { $dateToString: { format: '%Y-%m', date: '$date' } },
+					yearMonth: {
+						$dateToString: {
+							format: '%Y-%m',
+							date: '$date',
+							timezone: localTimeZone, // ensures the UTC date stored in db is properly converted to local time zone
+						},
+					},
 				},
 			},
 			{
