@@ -31,13 +31,23 @@ export default function Notes() {
 				id={note._id}
 				title={note.title}
 				body={note.body}
+				onEdit={handleEditNote}
 			/>
 		);
 	});
 
 	// Function to pass to addNoteForm to update notes state when a new note is created
-	function handleAddItem(newNote) {
+	function handleAddNote(newNote) {
 		setNotes((prev) => [...prev, newNote]);
+	}
+
+	// Function to pass to NoteDisplay to update note states when one of them is edited and updates the note with the corresponding id
+	function handleEditNote(id, updatedNote) {
+		setNotes((prev) =>
+			prev.map((note) => {
+				return note._id === id ? { ...note, ...updatedNote } : note;
+			})
+		);
 	}
 
 	return (
@@ -46,7 +56,7 @@ export default function Notes() {
 			<button onClick={handleOpen}>Add Note</button>
 			<main>
 				<Modal isOpen={isModalOpen} onClose={handleOpen}>
-					<AddNoteForm onAdd={handleAddItem} />
+					<AddNoteForm onAdd={handleAddNote} />
 				</Modal>
 				{noteElements}
 			</main>

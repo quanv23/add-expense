@@ -2,7 +2,7 @@ import { useState } from 'react';
 import YesNoButton from './YesNoButton';
 
 export default function NoteDisplay(props) {
-	const { id, title, body } = props;
+	const { id, title, body, onEdit } = props;
 
 	const [isEdit, setIsEdit] = useState(false); // State to manage whether the note is being editted or not
 	const [isDelete, setIsDelete] = useState(false); // State to manage whether the note is being deleted or not
@@ -28,6 +28,7 @@ export default function NoteDisplay(props) {
 		setEditFormData({ ...editFormData, [name]: value });
 	}
 
+	// Handles edits once it's confirmed and fetches from api using dynamic [id] route
 	async function handleEdit() {
 		try {
 			const response = await fetch(`/api/notes/${id}`, {
@@ -35,17 +36,27 @@ export default function NoteDisplay(props) {
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(editFormData),
 			});
+
+			// uses callback function onEdit to update the state of the new changes
+			const data = await response.json();
+			onEdit(id, data);
 		} catch (e) {
 			console.error('Error: ', e);
 		}
 		handleEditChange();
 	}
 
-	// Determines what buttons to show depending on the statem whether its edit/delete or confirm/cancel
+	// Handles when an edit is cancel and reverts state fields back to default so changes that are cancelled aren't saved
+	function handleEditCancel() {
+		setEditFormData({ title: title, body: body });
+		handleEditChange();
+	}
+
+	// Determines what buttons to show depending on the state whether its edit/delete or confirm/cancel
 	function determineButtons() {
 		if (isEdit) {
 			// confirmation buttons for editing a note
-			return <YesNoButton onCancel={handleEditChange} onConfirm={handleEdit} />;
+			return <YesNoButton onCancel={handleEditCancel} onConfirm={handleEdit} />;
 		} else if (isDelete) {
 			// confirmation buttons for deleting a note
 			return (

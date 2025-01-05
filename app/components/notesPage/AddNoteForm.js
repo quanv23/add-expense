@@ -9,7 +9,7 @@ export default function AddNoteForm(props) {
 		body: '',
 	});
 
-	// Function that updates on state on changes in input
+	// Function that updates state on changes in input
 	function handleChange(e) {
 		const { name, value } = e.target;
 		setNoteData({ ...noteData, [name]: value });

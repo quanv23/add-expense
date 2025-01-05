@@ -1,0 +1,1 @@
+1. Fix bug with updating notes, so that when the update is confirmed the frontend refreshes or does something in order to remain properly updated 
