@@ -3,8 +3,10 @@ import Note from '@/lib/models/Note';
 
 // PUT reqeust that edits a note
 export async function PUT(req, { params }) {
+	const { id } = await params;
+
 	try {
-		const { id } = await params;
+		await connectDB();
 		const data = await req.json(); // parse to js object
 
 		// Finds the matching document first since save() needs a document
@@ -16,6 +18,24 @@ export async function PUT(req, { params }) {
 		return new Response(JSON.stringify(data), { status: '200' });
 	} catch (e) {
 		console.error('Error updating note', e);
-		return new Response('Error updating note', { status: '500' });
+		return new Response(JSON.stringify({ error: 'Error updating note' }), {
+			status: '500',
+		});
+	}
+}
+
+export async function DELETE(req, { params }) {
+	const { id } = await params;
+
+	try {
+		await connectDB();
+		const note = await Note.findByIdAndDelete(id);
+		console.log(note);
+		return new Response(JSON.stringify(note), { status: '201' });
+	} catch (e) {
+		console.error('Error deleting note', e);
+		return new Response(JSON.stringify({ error: 'Error deleting note' }), {
+			status: '500',
+		});
 	}
 }
