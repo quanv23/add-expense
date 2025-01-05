@@ -1,20 +1,20 @@
 import { useState } from 'react';
-import YesNoButton from './YesNoButton';
+import EditDeleteButton from '../EditDeleteButton';
 
 export default function NoteDisplay(props) {
 	const { id, title, body, onEdit, onDelete } = props;
 
-	const [isEdit, setIsEdit] = useState(false); // State to manage whether the note is being editted or not
-	const [isDelete, setIsDelete] = useState(false); // State to manage whether the note is being deleted or not
+	const [isEdit, setIsEdit] = useState(false); // State to manage whether notes are being edited or not
 	const [editFormData, setEditFormData] = useState({
 		// State to manage form data used for editting
 		title: title,
 		body: body,
 	});
 
-	// Fucntion to toggles isDelete when an event occurs
-	function handleDeleteToggle() {
-		setIsDelete((prev) => !prev);
+	// Handles changes to input fields and updates state accordingly
+	function onChange(e) {
+		const { name, value } = e.target;
+		setEditFormData({ ...editFormData, [name]: value });
 	}
 
 	// Handles when delete is confirmed and calls api using dynamic route and deletes by id
@@ -30,18 +30,6 @@ export default function NoteDisplay(props) {
 		} catch (e) {
 			console.error('Error: ', e);
 		}
-		handleDeleteToggle();
-	}
-
-	// Function to toggles isEdit when an event occurs
-	function handleEditToggle() {
-		setIsEdit((prev) => !prev);
-	}
-
-	// Handles changes to input fields and updates state accordingly
-	function onChange(e) {
-		const { name, value } = e.target;
-		setEditFormData({ ...editFormData, [name]: value });
 	}
 
 	// Handles edits once it's confirmed and fetches from api using dynamic [id] route
@@ -61,34 +49,16 @@ export default function NoteDisplay(props) {
 		} catch (e) {
 			console.error('Error: ', e);
 		}
-		handleEditToggle();
 	}
 
-	// Handles when an edit is cancel and reverts state fields back to default so changes that are cancelled aren't saved
-	function handleEditCancel() {
+	// Toggles isEdit when an event occurs and is to be used in EditDeleteButton to properly update state
+	function toggleEditFormData() {
+		setIsEdit((prev) => !prev);
+	}
+
+	// Resets edit form data to be used in EditDeleteButton for correct edit cancellation
+	function resetEditFormData() {
 		setEditFormData({ title: title, body: body });
-		handleEditToggle();
-	}
-
-	// Determines what buttons to show depending on the state whether its edit/delete or confirm/cancel
-	function determineButtons() {
-		if (isEdit) {
-			// confirmation buttons for editing a note
-			return <YesNoButton onCancel={handleEditCancel} onConfirm={handleEdit} />;
-		} else if (isDelete) {
-			// confirmation buttons for deleting a note
-			return (
-				<YesNoButton onCancel={handleDeleteToggle} onConfirm={handleDelete} />
-			);
-		} else {
-			// Buttons to decide if they want to edit or delete
-			return (
-				<div>
-					<button onClick={handleEditToggle}>Edit</button>
-					<button onClick={handleDeleteToggle}>Delete</button>
-				</div>
-			);
-		}
 	}
 
 	return (
@@ -114,7 +84,12 @@ export default function NoteDisplay(props) {
 					<p>{body}</p>
 				</section>
 			)}
-			{determineButtons()}
+			<EditDeleteButton
+				toggleEditFormData={toggleEditFormData}
+				resetEditFormData={resetEditFormData}
+				handleDelete={handleDelete}
+				handleEdit={handleEdit}
+			/>
 			<br />
 		</div>
 	);
