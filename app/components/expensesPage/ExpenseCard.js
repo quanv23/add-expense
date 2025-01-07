@@ -3,22 +3,37 @@ import { useState } from 'react';
 import EditDeleteButton from '../EditDeleteButton';
 import SelectCategory from '../SelectCategory';
 
-// Takes a date string of ISO format "YYYY-MM-DDTHH:mm:ss:sssZ" and converts it to 'short numeric, numeric'
+// Takes a date string of ISO format "YYYY-MM-DDTHH:mm:ss:sssZ" and converts it to a specific date format
+// if isInput is true it returns date in the form YYYY-MM-DD in local time
+// else it returns date in short numeric, 2024 in local time
 // Ex. 2025-01-01T00:00:00 -> January 1, 2025
-function dateFormatConverter(dateString) {
+function dateFormatConverter(dateString, isInput) {
 	const date = new Date(dateString);
-	const formmattedDate = new Intl.DateTimeFormat('en-US', {
-		month: 'short',
-		day: 'numeric',
-		year: 'numeric',
-	}).format(date);
-	return formmattedDate;
+
+	if (isInput) {
+		// Converts time to local time in US format with specific options so <input type='date'> can read it
+		const formattedDate = new Intl.DateTimeFormat('en-US', {
+			year: 'numeric',
+			month: '2-digit',
+			day: '2-digit',
+		}).format(date);
+		const [month, day, year] = formattedDate.split('/');
+		return `${year}-${month}-${day}`;
+	} else {
+		// Converts time to local time in US format
+		const formmattedDate = new Intl.DateTimeFormat('en-US', {
+			month: 'short',
+			day: 'numeric',
+			year: 'numeric',
+		}).format(date);
+		return formmattedDate;
+	}
 }
 
 export default function ExpenseCard(props) {
 	const { id, title, amount, category, date } = props; // decompose props of an expense
-	const formmattedDate = dateFormatConverter(date); // formats date to be more readable
-	const inputFormattedDate = date.split('T')[0]; // formats date to YYYY-MM-DD so <input type='date'> can read it
+	const formmattedDate = dateFormatConverter(date, false); // formats date to be more readable
+	const inputFormattedDate = dateFormatConverter(date, true); // formats date to YYYY-MM-DD so <input type='date'> can read it
 
 	const [isModalOpen, setIsModalOpen] = useState(false); // State to manage whether expense modal is open or not
 	const [isEdit, setIsEdit] = useState(false); // State to manage whether modals fields are being editted or not
