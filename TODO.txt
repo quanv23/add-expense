@@ -1,2 +1,2 @@
-1. Look into remvoing useEffect from addExpense form and have selectCategory instead find the category that needs to be updated and pass that to an update form function 
-2. And at the same time have that update function update categoryDislay as well so selectCategory doesn't get the state and update passed to it 
+1. Find out way to convert UTC string to local date string in YYYY-MM-DD format 
+2. Causing a bug in ExpenseCard where the displaying date is different from the input date because display is formatted from local time and input if formatted from UTC time 

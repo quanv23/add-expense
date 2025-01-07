@@ -1,6 +1,7 @@
 import Modal from '../Modal';
 import { useState } from 'react';
 import EditDeleteButton from '../EditDeleteButton';
+import SelectCategory from '../SelectCategory';
 
 // Takes a date string of ISO format "YYYY-MM-DDTHH:mm:ss:sssZ" and converts it to 'short numeric, numeric'
 // Ex. 2025-01-01T00:00:00 -> January 1, 2025
@@ -15,18 +16,16 @@ function dateFormatConverter(dateString) {
 }
 
 export default function ExpenseCard(props) {
-	const { title, amount, category, date } = props; // decompose props
-	const { name, colour } = category; // decompose category from props
-	const formmattedDate = dateFormatConverter(date);
-	const inputFormattedDate = date.split('T')[0];
+	const { id, title, amount, category, date } = props; // decompose props of an expense
+	const formmattedDate = dateFormatConverter(date); // formats date to be more readable
+	const inputFormattedDate = date.split('T')[0]; // formats date to YYYY-MM-DD so <input type='date'> can read it
 
 	const [isModalOpen, setIsModalOpen] = useState(false); // State to manage whether expense modal is open or not
 	const [isEdit, setIsEdit] = useState(false); // State to manage whether modals fields are being editted or not
 	const [editFormData, setEditFormData] = useState({
 		title: title,
 		amount: amount,
-		name: name,
-		colour: colour,
+		category: { name: category.name, colour: category.colour },
 		date: inputFormattedDate,
 	});
 
@@ -41,19 +40,39 @@ export default function ExpenseCard(props) {
 		setIsModalOpen((prev) => !prev);
 	}
 
-	// Callback function for EditDeleteFunction that toggles 'isEdit' state
+	// Callback function for EditDeleteButton that toggles 'isEdit' state
 	function toggleIsEdit() {
 		setIsEdit((prev) => !prev);
 	}
 
-	// Callback function that resets all the edit form data to original value so if it's cancelled it doesn't save the changes
+	// Callback function for EditDelecteButton that resets all the edit form data to original value so if it's cancelled it doesn't save the changes
 	function resetEditFormData() {
 		setEditFormData({
 			title: title,
 			amount: amount,
-			name: name,
-			colour: colour,
+			category: { name: category.name, colour: category.colour },
 			date: inputFormattedDate,
+		});
+	}
+
+	// Handles when edits are confirmed and makes a PUT request to the api endpoint
+	async function handleEdit() {
+		try {
+			const response = await fetch(`/api/expenses/${id}`, {
+				method: 'PUT',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(editFormData), // takes edit form data as the body
+			});
+		} catch (e) {
+			console.error('Error: ', e);
+		}
+	}
+
+	// Callback function for SelectCategory that updates the editFormData with the new selected category
+	function handleCategoryChange(categoryObject) {
+		setEditFormData({
+			...editFormData,
+			category: { name: categoryObject.name, colour: categoryObject.colour },
 		});
 	}
 
@@ -78,6 +97,10 @@ export default function ExpenseCard(props) {
 							value={editFormData.amount}
 							onChange={onChange}
 						/>
+						<SelectCategory
+							updateFormData={handleCategoryChange}
+							initialCategory={category.name}
+						/>
 						<input
 							type='date'
 							name='date'
@@ -89,13 +112,15 @@ export default function ExpenseCard(props) {
 					<>
 						<p>{title}</p>
 						<p>{amount}</p>
-						<p>{name}</p>
+						<p>{category.name}</p>
 						<p>{formmattedDate}</p>
+						<p>{date}</p>
 					</>
 				)}
 				<EditDeleteButton
 					toggleEditFormData={toggleIsEdit}
 					resetEditFormData={resetEditFormData}
+					handleEdit={handleEdit}
 				/>
 			</Modal>
 			<br />

@@ -7,6 +7,17 @@ import MonthlyExpenses from '@/app/components/expensesPage/MonthlyExpenses';
 export default function Expenses() {
 	const [groupedExpenses, setGroupedExpenses] = useState([]);
 
+	/**
+	 * groupedExpenses are all expenses grouped by the month they're in with the type:
+	 * [
+	 *   {
+	 *     _id: String,
+	 *     expenses: [ { expenses (refer to Expense Model) } ]
+	 *   }
+	 * ]
+	 */
+
+	// Fetches the grouped expenses from the api endpoint
 	useEffect(() => {
 		async function getExpenses() {
 			const response = await fetch('/api/expenses');
@@ -16,6 +27,7 @@ export default function Expenses() {
 		getExpenses();
 	}, []);
 
+	// Maps grouped expenses to monthlyExpenses to display them
 	const groupedExpensesElements = groupedExpenses.map((expensesPerMonth) => {
 		return (
 			<MonthlyExpenses

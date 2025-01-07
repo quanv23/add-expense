@@ -71,7 +71,10 @@ export default function AddExpenseForm() {
 			</label>
 			<label htmlFor='category'>
 				Category:
-				<SelectCategory updateFormData={handleCategoryChange} />
+				<SelectCategory
+					updateFormData={handleCategoryChange}
+					initialCategory={''}
+				/>
 			</label>
 			<button type='submit'>Add +</button>
 		</form>

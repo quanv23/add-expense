@@ -29,8 +29,7 @@ export async function DELETE(req, { params }) {
 
 	try {
 		await connectDB();
-		const note = await Note.findByIdAndDelete(id);
-		console.log(note);
+		const note = await Note.findByIdAndDelete(id); // Finds and deletes the note by id
 		return new Response(JSON.stringify(note), { status: '201' });
 	} catch (e) {
 		console.error('Error deleting note', e);

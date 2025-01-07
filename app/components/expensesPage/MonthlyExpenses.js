@@ -13,7 +13,7 @@ function dateFormatConverter(dateString) {
 }
 
 export default function MonthlyExpenses(props) {
-	const { date, expenses } = props; // decomposes properties
+	const { date, expenses } = props; // decomposes properties of groupedExpense
 	const formattedDate = dateFormatConverter(date); // converts date to more readable format
 
 	// maps expenses onto expenseCard component
@@ -21,6 +21,7 @@ export default function MonthlyExpenses(props) {
 		return (
 			<ExpenseCard
 				key={expense._id}
+				id={expense._id}
 				title={expense.title}
 				amount={expense.amount}
 				category={expense.category}

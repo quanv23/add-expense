@@ -4,6 +4,14 @@ import EditDeleteButton from '../EditDeleteButton';
 export default function NoteDisplay(props) {
 	const { id, title, body, onEdit, onDelete } = props;
 
+	/**
+	 * id: String that represents the note id
+	 * title: String that represents the title of the note
+	 * body: String that represents the body of the note
+	 * onEdit: Callback function that takes id : String, updatedNote: Object and updates the note with the matching id in the display state
+	 * onDelete: Callback function that takes id : String, and removes the note with the matching id from the state
+	 */
+
 	const [isEdit, setIsEdit] = useState(false); // State to manage whether notes are being edited or not
 	const [editFormData, setEditFormData] = useState({
 		// State to manage form data used for editting
