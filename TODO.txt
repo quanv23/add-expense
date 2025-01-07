@@ -1,1 +1,2 @@
-1. Fix bug with updating notes, so that when the update is confirmed the frontend refreshes or does something in order to remain properly updated 
+1. Look into remvoing useEffect from addExpense form and have selectCategory instead find the category that needs to be updated and pass that to an update form function 
+2. And at the same time have that update function update categoryDislay as well so selectCategory doesn't get the state and update passed to it 

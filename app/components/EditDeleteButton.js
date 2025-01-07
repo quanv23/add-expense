@@ -4,6 +4,13 @@ export default function EditDeleteButton(props) {
 	const { toggleEditFormData, resetEditFormData, handleDelete, handleEdit } =
 		props;
 
+	/**
+	 * toggleEditFormData: callback function that updates whether the fields are in edit form or not
+	 * resetEditFormData: callback function that resets the 'editForm' state back to their original values when edit is cancelled
+	 * handleDelete: function that occurs once the delete is confirmed (usually some fetch DELETE method to api)
+	 * handleEdit: function that occurs once the edit is confirmed (usually some fetch PUT method to api)
+	 */
+
 	const [isEdit, setIsEdit] = useState(false); // State to manage whether object is being editted or not
 	const [isDelete, setIsDelete] = useState(false); // State to manage whether object is being deleted or not
 
