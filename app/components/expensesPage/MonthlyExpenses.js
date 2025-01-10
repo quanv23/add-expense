@@ -9,11 +9,12 @@ function dateFormatConverter(dateString) {
 		month: 'long',
 		year: 'numeric',
 	}).format(date);
+
 	return formmattedDate;
 }
 
 export default function MonthlyExpenses(props) {
-	const { date, expenses } = props; // decomposes properties of groupedExpense
+	const { date, expenses, onDelete, onEdit } = props; // decomposes properties of groupedExpense
 	const formattedDate = dateFormatConverter(date); // converts date to more readable format
 
 	// maps expenses onto expenseCard component
@@ -22,6 +23,9 @@ export default function MonthlyExpenses(props) {
 			<ExpenseCard
 				key={expense._id}
 				id={expense._id}
+				month={date}
+				onDelete={onDelete}
+				onEdit={onEdit}
 				title={expense.title}
 				amount={expense.amount}
 				category={expense.category}

@@ -1,5 +1,6 @@
 import connectDB from '@/lib/mongodb';
 import Expense from '@/lib/models/Expense';
+import { connect } from 'mongoose';
 
 // Makes a PUT request to edit a expense with the dynamic id
 export async function PUT(req, { params }) {
@@ -26,6 +27,22 @@ export async function PUT(req, { params }) {
 	} catch (e) {
 		console.error('Error updating expense', e);
 		return new Response(JSON.stringify({ error: 'Error updating expense' }), {
+			status: '500',
+		});
+	}
+}
+
+// DELETE request that deletes one expense from the given dynamic id
+export async function DELETE(req, { params }) {
+	const { id } = await params;
+
+	try {
+		await connectDB();
+		const expense = await Expense.findByIdAndDelete(id);
+		return new Response(JSON.stringify(expense), { status: '200' });
+	} catch (e) {
+		console.error('Error deleting expense', e);
+		return new Response(JSON.stringify({ error: 'Error deleting expense' }), {
 			status: '500',
 		});
 	}

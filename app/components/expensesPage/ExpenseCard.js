@@ -31,7 +31,7 @@ function dateFormatConverter(dateString, isInput) {
 }
 
 export default function ExpenseCard(props) {
-	const { id, title, amount, category, date } = props; // decompose props of an expense
+	const { id, month, onDelete, onEdit, title, amount, category, date } = props; // decompose props of an expense
 	const formmattedDate = dateFormatConverter(date, false); // formats date to be more readable
 	const inputFormattedDate = dateFormatConverter(date, true); // formats date to YYYY-MM-DD so <input type='date'> can read it
 
@@ -78,6 +78,26 @@ export default function ExpenseCard(props) {
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(editFormData), // takes edit form data as the body
 			});
+
+			// Only if the resonse is ok it calls callback function onEdit to update state
+			if (response.ok) {
+				const data = await response.json(); // must convert data to json object first
+				onEdit(month, id, data);
+			}
+		} catch (e) {
+			console.error('Error: ', e);
+		}
+	}
+
+	// Handles when a delete is confirmed and makes DELETE request to api endpoint
+	async function handleDelete() {
+		try {
+			const response = await fetch(`/api/expenses/${id}`, { method: 'DELETE' });
+
+			// Only if the response is ok it calls callback function onDelete to update state
+			if (response.ok) {
+				onDelete(month, id);
+			}
 		} catch (e) {
 			console.error('Error: ', e);
 		}
@@ -136,6 +156,7 @@ export default function ExpenseCard(props) {
 					toggleEditFormData={toggleIsEdit}
 					resetEditFormData={resetEditFormData}
 					handleEdit={handleEdit}
+					handleDelete={handleDelete}
 				/>
 			</Modal>
 			<br />

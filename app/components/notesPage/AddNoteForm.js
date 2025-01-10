@@ -15,6 +15,7 @@ export default function AddNoteForm(props) {
 		setNoteData({ ...noteData, [name]: value });
 	}
 
+	// Function that handles form submission for new notes
 	async function handleSubmit(e) {
 		e.preventDefault(); // prevents page refresh on submit
 

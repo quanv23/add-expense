@@ -24,13 +24,14 @@ export async function PUT(req, { params }) {
 	}
 }
 
+// DELETE request that deletes one note from the given dynamic id
 export async function DELETE(req, { params }) {
 	const { id } = await params;
 
 	try {
 		await connectDB();
 		const note = await Note.findByIdAndDelete(id); // Finds and deletes the note by id
-		return new Response(JSON.stringify(note), { status: '201' });
+		return new Response(JSON.stringify(note), { status: '200' });
 	} catch (e) {
 		console.error('Error deleting note', e);
 		return new Response(JSON.stringify({ error: 'Error deleting note' }), {
