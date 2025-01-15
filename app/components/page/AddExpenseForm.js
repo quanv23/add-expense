@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import SelectCategory from './SelectCategory';
+import SelectCategory from '../SelectCategory';
 
 export default function AddExpenseForm() {
 	const [expenseData, setExpenseData] = useState({
@@ -9,6 +9,7 @@ export default function AddExpenseForm() {
 		title: '',
 		amount: '',
 		category: {},
+		type: '', // left blank and is set server side
 	});
 
 	// Whenver an input value is changes it adjusts it corresponding field in expenseData state

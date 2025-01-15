@@ -1,4 +1,4 @@
-import AddExpenseForm from './components/AddExpenseForm';
+import AddExpenseForm from './components/page/AddExpenseForm';
 import Link from 'next/link';
 
 export default function Home() {

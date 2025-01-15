@@ -47,6 +47,15 @@ export async function POST(req) {
 	try {
 		await connectDB();
 		const body = await req.json(); // parses the req from JSON to javascript object
+
+		// Sets the type of the expense as either 'income' or 'expense' depending on if its negative or not
+		if (body.amount >= 0) {
+			body.type = 'income';
+		} else {
+			body.type = 'expense';
+		}
+
+		console.log(body);
 		const newExpense = await Expense.create(body); // using the expense model creates an instance in the db with the body object
 		return new Response(JSON.stringify(newExpense), { status: '201' });
 	} catch (e) {
