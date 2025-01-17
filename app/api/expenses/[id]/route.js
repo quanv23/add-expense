@@ -1,6 +1,5 @@
 import connectDB from '@/lib/mongodb';
 import Expense from '@/lib/models/Expense';
-import { connect } from 'mongoose';
 
 // Makes a PUT request to edit a expense with the dynamic id
 export async function PUT(req, { params }) {

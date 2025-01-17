@@ -10,6 +10,7 @@
 		"lint": "next lint"
 	},
 	"dependencies": {
+		"air-datepicker": "^3.5.3",
 		"dotenv": "^16.4.7",
 		"moment-timezone": "^0.5.46",
 		"mongodb": "^6.12.0",
