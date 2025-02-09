@@ -4,36 +4,44 @@ import 'air-datepicker/air-datepicker.css';
 
 import localeEn from 'air-datepicker/locale/en';
 
+let count = 0;
+
 export default function ExpenseIncomeButton(props) {
-	const { isExpense, toggleIsExpense, date, toggleDate } = props;
+	const { isExpense, toggleIsExpense, setDateRange } = props;
 
 	const datepickerRef = useRef(); // creates reference to datepicker
 
 	useEffect(() => {
 		// Creates new datepicker that references an <input> in JSX
-		const datepicker = new AirDatepicker(datepickerRef.current, {
-			dateFormat(date) {
-				return date.toLocaleDateString('en-US', {
-					month: 'short',
-					day: '2-digit',
-					year: 'numeric',
-				});
-			},
-			locale: localeEn.default,
-			isMobile: true,
-			autoClose: true,
-			onSelect({ formattedDate }) {
-				// updates date when a new date is selected
-				toggleDate(formattedDate);
-			},
-			navTitles: { days: '<strong>Choose Date</strong> MM, yyyy' },
+		const datepicker = new AirDatepicker(
+			datepickerRef.current,
+			{
+				locale: localeEn.default,
+				dateFormat: 'MMM. dd',
+				range: true,
+				isMobile: true, // Makes the calendar open as a modal
+				autoClose: true,
+				multipleDatesSeparator: ' - ',
+				onSelect({ date }) {
+					if (count === 1) {
+						setDateRange(date[0], date[1]);
+						count = 0;
+					} else {
+						count += 1;
+					}
 
-			/**
-			 * Must use 'default' field since source code exports the locales in this format
-			 * export default { key : value }
-			 * Without the const or variable name which means when it is imported it comes in as { default, _esModule } where default is the actual info
-			 */
-		});
+					// updates date when a new date is selected
+					// toggleDate(formattedDate);
+				},
+
+				/**
+				 * Must use 'default' field for localeEn since source code exports the locales in this format
+				 * export default { key : value }
+				 * Without the const or variable name which means when it is imported it comes in as { default, _esModule } where default is the actual info
+				 */
+			},
+			[]
+		);
 
 		// Cleanup function that occurs when the component is unmounted
 		return () => {

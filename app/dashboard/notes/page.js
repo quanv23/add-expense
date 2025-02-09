@@ -16,9 +16,13 @@ export default function Notes() {
 	// Fetches notes from database on initial render
 	useEffect(() => {
 		async function getNotes() {
-			const response = await fetch('/api/notes');
-			const data = await response.json();
-			setNotes(data);
+			try {
+				const response = await fetch('/api/notes');
+				const data = await response.json();
+				setNotes(data);
+			} catch (e) {
+				console.error('Error: ', e);
+			}
 		}
 		getNotes();
 	}, []);
