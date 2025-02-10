@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import ExpenseIncomeHeader from '@/app/components/ExpenseIncomeHeader';
 import CategoryCard from '@/app/components/CategoryCard';
+import RangeSelector from '@/app/components/RangeSelector';
 
 const options = {
 	month: 'short',
@@ -10,15 +11,16 @@ const options = {
 	year: 'numeric',
 };
 
+const today = new Date();
+
 export default function Categories() {
 	const [filteredCategories, setFilteredCategories] = useState([]);
 
 	// State that manages information to narrow query
 	const [queryParameters, setQueryParameters] = useState({
 		isExpense: true, // switches between either expenses or income
-		endDate: new Date(),
-		startDate: new Date(),
-		range: 4, // 1 = day, 2 = week, 3 = month, 4 = year
+		startDate: today.toLocaleString('en-US', options),
+		range: 'year',
 	});
 
 	// Callback function to toggle view between expense and income
@@ -30,39 +32,63 @@ export default function Categories() {
 	}
 
 	// Callback function to update the new selected startDate
-	function setDateRange(newStartDate, newEndDate) {
+	function setStartDate(newStartDate) {
 		setQueryParameters({
 			...queryParameters,
-			startDate: newStartDate,
-			endDate: newEndDate,
+			startDate: newStartDate.toLocaleString('en-US', options),
+		});
+	}
+
+	function setRange(newRange) {
+		setQueryParameters({
+			...queryParameters,
+			range: newRange,
 		});
 	}
 
 	useEffect(() => {
+		console.log('useEffect');
+
 		// Gets the summarized category data based off of the query parameters
 		async function fetchSummarizedCategories() {
+			console.log(queryParameters.isExpense);
 			try {
-				const res = await fetch('/api/expenses/category');
+				// Sends query parameters into fetch URL
+				const res = await fetch(
+					`/api/expenses/category?isExpense=${queryParameters.isExpense}&startDate=${queryParameters.startDate}&range=${queryParameters.range}`
+				);
 				const data = await res.json();
 
-				// Adds additionally informtation to the data
+				// Calulates the total sum of the type (expense/income), as well the sum perentage of each category
+				data.totalSum = data.reduce((acc, cur) => acc + cur.sum, 0);
 				data.forEach((obj) => {
-					// Calculates the total sum of the entire type (income/expense)
-					const categories = obj.categories;
-					const sum = categories.reduce((acc, cur) => acc + cur.totalSum, 0);
-
-					// For each category calculates their percent relative to their type's sum
-					categories.forEach((obj) => {
-						obj.percent = Math.round((obj.totalSum / sum) * 100);
-					});
+					obj.percent = Math.round((obj.sum / data.totalSum) * 100);
 				});
+
 				setFilteredCategories(data);
 			} catch (e) {
 				console.error('Error: ', e);
 			}
 		}
 		fetchSummarizedCategories();
-	}, []);
+	}, [
+		// dependencies ensure that the query is only re-run on changes to the parameters
+		queryParameters.isExpense,
+		queryParameters.startDate,
+		queryParameters.range,
+	]);
+
+	console.log(filteredCategories);
+	const categoryCards = filteredCategories.map((obj) => {
+		return (
+			<CategoryCard
+				key={obj._id}
+				categoryName={obj._id}
+				totalSum={obj.sum}
+				percent={obj.percent}
+			/>
+		);
+	});
 
 	return (
 		<div>
@@ -70,11 +96,13 @@ export default function Categories() {
 				<ExpenseIncomeHeader
 					isExpense={queryParameters.isExpense}
 					toggleIsExpense={toggleIsExpense}
-					setDateRange={setDateRange}
+					setStartDate={setStartDate}
 				/>
 			</header>
-			<div>{queryParameters.startDate.toLocaleString('en-US', options)}</div>
-			<div>{queryParameters.endDate.toLocaleString('en-US', options)}</div>
+			<main>
+				<RangeSelector setRange={setRange} />
+				{categoryCards}
+			</main>
 		</div>
 	);
 }

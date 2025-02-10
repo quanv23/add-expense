@@ -7,7 +7,7 @@ import localeEn from 'air-datepicker/locale/en';
 let count = 0;
 
 export default function ExpenseIncomeButton(props) {
-	const { isExpense, toggleIsExpense, setDateRange } = props;
+	const { isExpense, toggleIsExpense, setStartDate } = props;
 
 	const datepickerRef = useRef(); // creates reference to datepicker
 
@@ -18,20 +18,11 @@ export default function ExpenseIncomeButton(props) {
 			{
 				locale: localeEn.default,
 				dateFormat: 'MMM. dd',
-				range: true,
 				isMobile: true, // Makes the calendar open as a modal
 				autoClose: true,
-				multipleDatesSeparator: ' - ',
 				onSelect({ date }) {
-					if (count === 1) {
-						setDateRange(date[0], date[1]);
-						count = 0;
-					} else {
-						count += 1;
-					}
-
 					// updates date when a new date is selected
-					// toggleDate(formattedDate);
+					setStartDate(date);
 				},
 
 				/**

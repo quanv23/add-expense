@@ -5,7 +5,7 @@ export default function CategoryCard(props) {
 		<div>
 			<h3>{categoryName}</h3>
 			<p>{totalSum}</p>
-			<p>%{percent}</p>
+			<p>{percent}%</p>
 		</div>
 	);
 }
