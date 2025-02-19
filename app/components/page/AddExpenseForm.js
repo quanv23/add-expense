@@ -1,14 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import SelectCategory from '../SelectCategory';
+import SelectCategory from './SelectCategory';
 
 export default function AddExpenseForm() {
 	const [expenseData, setExpenseData] = useState({
 		// State for the input values of expenses
 		title: '',
 		amount: '',
-		category: {},
+		category: { name: '', colour: '' },
 		type: '', // left blank and is set server side
 	});
 
@@ -41,7 +41,11 @@ export default function AddExpenseForm() {
 
 			// Resets input fields only if response is ok
 			if (response.ok) {
-				setExpenseData({ title: '', amount: '', category: '' });
+				setExpenseData({
+					title: '',
+					amount: '',
+					category: { name: '', colour: '' },
+				});
 			}
 		} catch (e) {
 			console.error('Error: ', e);
@@ -74,7 +78,7 @@ export default function AddExpenseForm() {
 				Category:
 				<SelectCategory
 					updateFormData={handleCategoryChange}
-					initialCategory={''}
+					category={expenseData.category}
 				/>
 			</label>
 			<button type='submit'>Add +</button>

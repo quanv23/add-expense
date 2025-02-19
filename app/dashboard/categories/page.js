@@ -2,8 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import ExpenseIncomeHeader from '@/app/components/ExpenseIncomeHeader';
-import CategoryCard from '@/app/components/CategoryCard';
-import RangeSelector from '@/app/components/RangeSelector';
+import CategoryCard from '@/app/components/categoryPage/CategoryCard';
+import RangeSelector from '@/app/components/categoryPage/RangeSelector';
+import Modal from '@/app/components/Modal';
+import EditCategoryCard from '@/app/components/categoryPage/EditCategoryCard';
+import AddCategoryForm from '@/app/components/categoryPage/AddCategoryForm';
 
 const options = {
 	month: 'short',
@@ -15,6 +18,7 @@ const today = new Date();
 
 export default function Categories() {
 	const [filteredCategories, setFilteredCategories] = useState([]);
+	const [isOpen, setIsOpen] = useState(false); // state to manage 'add category' modal
 
 	// State that manages information to narrow query
 	const [queryParameters, setQueryParameters] = useState({
@@ -22,6 +26,11 @@ export default function Categories() {
 		startDate: today.toLocaleString('en-US', options),
 		range: 'year',
 	});
+
+	// Function that updates whether the add category modal is showing or not
+	function toggleModal() {
+		setIsOpen((prev) => !prev);
+	}
 
 	// Callback function to toggle view between expense and income
 	function toggleIsExpense() {
@@ -39,6 +48,7 @@ export default function Categories() {
 		});
 	}
 
+	// Callback function to set the range
 	function setRange(newRange) {
 		setQueryParameters({
 			...queryParameters,
@@ -47,11 +57,8 @@ export default function Categories() {
 	}
 
 	useEffect(() => {
-		console.log('useEffect');
-
 		// Gets the summarized category data based off of the query parameters
 		async function fetchSummarizedCategories() {
-			console.log(queryParameters.isExpense);
 			try {
 				// Sends query parameters into fetch URL
 				const res = await fetch(
@@ -78,7 +85,7 @@ export default function Categories() {
 		queryParameters.range,
 	]);
 
-	console.log(filteredCategories);
+	// Maps the filtered categories onto their own card component
 	const categoryCards = filteredCategories.map((obj) => {
 		return (
 			<CategoryCard
@@ -86,6 +93,17 @@ export default function Categories() {
 				categoryName={obj._id}
 				totalSum={obj.sum}
 				percent={obj.percent}
+				expenses={obj.expenses}
+			/>
+		);
+	});
+
+	const editCategoryCards = filteredCategories.map((obj) => {
+		return (
+			<EditCategoryCard
+				key={obj._id}
+				categoryName={obj._id}
+				categoryColour='#ffffff'
 			/>
 		);
 	});
@@ -100,8 +118,13 @@ export default function Categories() {
 				/>
 			</header>
 			<main>
-				<RangeSelector setRange={setRange} />
+				<RangeSelector setRange={setRange} range={queryParameters.range} />
 				{categoryCards}
+				<button onClick={toggleModal}>Add</button>
+				<Modal isOpen={isOpen} onClose={toggleModal}>
+					<AddCategoryForm />
+					{editCategoryCards}
+				</Modal>
 			</main>
 		</div>
 	);

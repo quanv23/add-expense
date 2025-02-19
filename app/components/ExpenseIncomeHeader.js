@@ -4,10 +4,14 @@ import 'air-datepicker/air-datepicker.css';
 
 import localeEn from 'air-datepicker/locale/en';
 
-let count = 0;
-
 export default function ExpenseIncomeButton(props) {
 	const { isExpense, toggleIsExpense, setStartDate } = props;
+
+	/**
+	 * isExpense: Boolean that indicates whether the type is current expense (true) or income (true)
+	 * toggleIsExpense: Function that toggles isExpense
+	 * setStartDate: Function that takes one arguement which is the new start date
+	 */
 
 	const datepickerRef = useRef(); // creates reference to datepicker
 
@@ -58,7 +62,7 @@ export default function ExpenseIncomeButton(props) {
 			>
 				Incomes
 			</button>
-			<input type='text' ref={datepickerRef} placeholder='Date Range' />
+			<input type='text' ref={datepickerRef} placeholder='Date' />
 		</div>
 	);
 }

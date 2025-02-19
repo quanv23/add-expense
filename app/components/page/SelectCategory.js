@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react';
 
 export default function SelectCategory(props) {
-	const { updateFormData, initialCategory } = props;
+	const { updateFormData, category } = props;
 
 	/**
 	 * updateFormData: Callback function that updates the 'formData' state with the given categoryObject passed to it when selected category is changed
 	 */
 
 	const [categories, setCategories] = useState([]); // default state is [] for map function
-	const [categoryDisplay, setCategoryDisplay] = useState(initialCategory);
 
 	// On intial render fetches categories from database
 	useEffect(() => {
@@ -32,8 +31,6 @@ export default function SelectCategory(props) {
 	// Handles when the selected category changes by getting the id, and using a callback function to update state with the new categroy selected
 	function handleCategoryChange(e) {
 		const { value } = e.target; // value is the id of the category
-		setCategoryDisplay(value);
-
 		const categoryObject = categories.find((object) => object.name === value);
 		updateFormData(categoryObject); // callback function that updates expenseForm by passing it the corresponding selected category object
 	}
@@ -42,7 +39,7 @@ export default function SelectCategory(props) {
 		<select
 			name='category'
 			id='category'
-			value={categoryDisplay}
+			value={category.name}
 			onChange={handleCategoryChange}
 		>
 			<option value=''>Select a Category</option>

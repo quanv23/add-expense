@@ -50,9 +50,8 @@ export async function GET(req) {
 		}
 
 		await connectDB();
-		console.log(type);
 		const expenses = await Expense.aggregate([
-			// Gets all expenses of either type expense or income
+			// Gets all expenses of either type expense or income, then filtered them between start and last day
 			{ $match: { type: type } },
 			{ $match: { date: { $gte: firstDay, $lte: lastDay } } },
 			// Groups them by category name, and sums the total amount of each category

@@ -13,3 +13,18 @@ export async function GET() {
 		return new Response('Error getting categories', { status: 500 });
 	}
 }
+
+// Creates route to handle POST request for one instance
+export async function POST(req) {
+	try {
+		await connectDB();
+		const body = await req.json();
+		const newCategory = await Category.create(body); // creates category with the new body
+		return new Response(JSON.stringify(newCategory), { status: '201' });
+	} catch (e) {
+		console.error('Error creating category', e);
+		return new Response(JSON.stringify({ error: 'Error creating category' }), {
+			status: '500',
+		});
+	}
+}

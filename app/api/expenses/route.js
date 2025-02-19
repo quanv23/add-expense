@@ -60,6 +60,8 @@ export async function POST(req) {
 		return new Response(JSON.stringify(newExpense), { status: '201' });
 	} catch (e) {
 		console.error('Error creating expense', e);
-		return new Response('Error creating expense', { status: '500' });
+		return new Response(JSON.stringify({ error: 'Error creating expense' }), {
+			status: '500',
+		});
 	}
 }

@@ -1,7 +1,7 @@
 import Modal from '../Modal';
 import { useState } from 'react';
 import EditDeleteButton from '../EditDeleteButton';
-import SelectCategory from '../SelectCategory';
+import SelectCategory from '../page/SelectCategory';
 
 // Takes a date string of ISO format "YYYY-MM-DDTHH:mm:ss:sssZ" and converts it to a specific date format
 // if isInput is true it returns date in the form YYYY-MM-DD in local time
